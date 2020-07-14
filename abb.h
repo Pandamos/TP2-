@@ -128,6 +128,6 @@ void arbol_destruir(abb_t* arbol);
  * recorridos válidos son: ABB_RECORRER_INORDEN, ABB_RECORRER_PREORDEN
  * y ABB_RECORRER_POSTORDEN.
 */
-void abb_con_cada_elemento(abb_t* arbol, int recorrido, bool (*funcion)(void*, void*), void* extra);
+void abb_con_cada_elemento(abb_t* arbol, int recorrido, void (*funcion)(void*, void*, void*), void* extra, void* extra_2);
 
 #endif /* __ARBOL_BINARIO_DE_BUSQUEDA_H__ */
