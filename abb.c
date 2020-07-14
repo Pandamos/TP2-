@@ -590,20 +590,20 @@ int arbol_recorrido_postorden(abb_t* arbol, void** array, int tamanio_array){
  * Recorre el arbol inorden enviando a cada elemento a la función recibida por parámetro, si la función devuelve NULL
  * finaliza el recorrido.
  */
-void recorrer_arbol_inorden(nodo_abb_t* nodo, bool (*funcion)(void*, void*), void* extra, bool* resultado_funcion){
+void recorrer_arbol_inorden(nodo_abb_t* nodo, void (*funcion)(void*, void*, void*), void* extra, void* extra_2, bool* resultado_funcion){
 	if ((*resultado_funcion))
 		return;
 
 	if (nodo->izquierda){
-		recorrer_arbol_inorden(nodo->izquierda, funcion, extra, resultado_funcion);
+		recorrer_arbol_inorden(nodo->izquierda, funcion, extra, extra_2, resultado_funcion);
 		if ((*resultado_funcion))
 			return;
 	}
 
-	(*resultado_funcion) = funcion(nodo->elemento, extra);
+	funcion(nodo->elemento, extra, extra_2);
 
 	if (nodo->derecha && !(*resultado_funcion)){
-		recorrer_arbol_inorden(nodo->derecha, funcion, extra, resultado_funcion);
+		recorrer_arbol_inorden(nodo->derecha, funcion, extra, extra_2, resultado_funcion);
 		if ((*resultado_funcion))
 			return;
 	}
@@ -613,58 +613,58 @@ void recorrer_arbol_inorden(nodo_abb_t* nodo, bool (*funcion)(void*, void*), voi
  * Recorre el arbol postorden enviando a cada elemento a la función recibida por parámetro, si la función devuelve NULL
  * finaliza el recorrido.
  */
-void recorrer_arbol_postorden(nodo_abb_t* nodo, bool (*funcion)(void*, void*), void* extra, bool* resultado_funcion){
+void recorrer_arbol_postorden(nodo_abb_t* nodo, void (*funcion)(void*, void*, void*), void* extra, void* extra_2, bool* resultado_funcion){
 	if ((*resultado_funcion))
 		return;
 
 	if (nodo->izquierda){
-		recorrer_arbol_postorden(nodo->izquierda, funcion, extra, resultado_funcion);
+		recorrer_arbol_postorden(nodo->izquierda, funcion, extra, extra_2, resultado_funcion);
 		if ((*resultado_funcion))
 			return;
 	}
 
 	if (nodo->derecha){
-		recorrer_arbol_postorden(nodo->derecha, funcion, extra, resultado_funcion);
+		recorrer_arbol_postorden(nodo->derecha, funcion, extra, extra_2, resultado_funcion);
 		if ((*resultado_funcion))
 			return;
 	}
 
-	(*resultado_funcion) = funcion(nodo->elemento, extra);
+	funcion(nodo->elemento, extra, extra_2);
 }
 
 /*
  * Recorre el arbol preorden enviando a cada elemento a la función recibida por parámetro, si la función devuelve NULL
  * finaliza el recorrido.
  */
-void recorrer_arbol_preorden(nodo_abb_t* nodo, bool (*funcion)(void*, void*), void* extra, bool* resultado_funcion){
+void recorrer_arbol_preorden(nodo_abb_t* nodo, void (*funcion)(void*, void*, void*), void* extra, void* extra_2, bool* resultado_funcion){
 	if ((*resultado_funcion))
 		return;
 
-	(*resultado_funcion) = funcion(nodo->elemento, extra);
+	funcion(nodo->elemento, extra, extra_2);
 
 	if (nodo->izquierda){
-		recorrer_arbol_preorden(nodo->izquierda, funcion, extra, resultado_funcion);
+		recorrer_arbol_preorden(nodo->izquierda, funcion, extra, extra_2, resultado_funcion);
 		if ((*resultado_funcion))
 			return;
 	}
 
 	if (nodo->derecha){
-		recorrer_arbol_preorden(nodo->derecha, funcion, extra, resultado_funcion);
+		recorrer_arbol_preorden(nodo->derecha, funcion, extra, extra_2, resultado_funcion);
 		if ((*resultado_funcion))
 			return;
 	}
 }
 
-void abb_con_cada_elemento(abb_t* arbol, int recorrido, bool (*funcion)(void*, void*), void* extra){
+void abb_con_cada_elemento(abb_t* arbol, int recorrido, void (*funcion)(void*, void*, void*), void* extra, void* extra_2){
 	if (!arbol || !funcion || recorrido > MAXIMO_VALOR_RECORRIDO || recorrido < MINIMO_VALOR_RECORRIDO || arbol_vacio(arbol))
 		return;
 
 	bool resultado_funcion = false;
 
 	if (recorrido == ABB_RECORRER_INORDEN)
-		recorrer_arbol_inorden(arbol->nodo_raiz, funcion, extra, &resultado_funcion);
+		recorrer_arbol_inorden(arbol->nodo_raiz, funcion, extra, extra_2, &resultado_funcion);
 	else if (recorrido == ABB_RECORRER_PREORDEN)
-		recorrer_arbol_preorden(arbol->nodo_raiz, funcion, extra, &resultado_funcion);
+		recorrer_arbol_preorden(arbol->nodo_raiz, funcion, extra, extra_2, &resultado_funcion);
 	else
-		recorrer_arbol_postorden(arbol->nodo_raiz, funcion, extra, &resultado_funcion);
+		recorrer_arbol_postorden(arbol->nodo_raiz, funcion, extra, extra_2, &resultado_funcion);
 }
