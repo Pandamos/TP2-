@@ -19,6 +19,7 @@ struct lista{
   nodo_t* tope;
   nodo_t* primero;
   size_t cantidad_elementos;
+  lista_liberar_elemento destructor;
 };
 
 struct lista_iterador{
@@ -38,7 +39,7 @@ const bool ERROR_ITERADOR = false;
 const bool ESTA_VACIA = true;
 const bool ULTIMO_ELEMENTO_VALIDO = true;
 
-lista_t* lista_crear(){
+lista_t* lista_crear(lista_liberar_elemento destructor){
   lista_t* lista = (lista_t*)malloc(sizeof(lista_t));
   if (!lista)
     return ERROR_MEMORIA;
@@ -46,6 +47,7 @@ lista_t* lista_crear(){
   lista->tope = NULL;
   lista->primero = NULL;
   lista->cantidad_elementos = 0;
+  lista->destructor = destructor;
 
   return lista;
 }
@@ -125,6 +127,8 @@ int lista_borrar(lista_t* lista){
   }
   nodo_iterador->siguiente = NULL;
   lista->tope = nodo_iterador;
+  if (lista->destructor)
+    lista->destructor(nodo_borrador->elemento);
   free (nodo_borrador);
 
   lista->cantidad_elementos --;
@@ -143,6 +147,8 @@ void borrar_nodo(lista_t* lista, size_t posicion, nodo_t* nodo_borrador, nodo_t*
   nodo_borrador = nodo_iterador->siguiente;
   nodo_iterador->siguiente = nodo_borrador->siguiente;
 
+  if (lista->destructor)
+    lista->destructor(nodo_borrador->elemento);
   free (nodo_borrador);
 
   lista->cantidad_elementos --;
@@ -239,6 +245,8 @@ int lista_desencolar(lista_t* lista){
   nodo_t* nodo_borrador = lista->primero;
 
   lista->primero = lista->primero->siguiente;
+  if (lista->destructor)
+    lista->destructor(nodo_borrador->elemento);
   free (nodo_borrador);
 
   lista->cantidad_elementos --;
@@ -267,8 +275,12 @@ void lista_destruir(lista_t* lista){
   while (lista->primero->siguiente != NO_TIENE_SIGUIENTE){
     nodo_borrador = lista->primero;
     lista->primero = lista->primero->siguiente;
+    if (lista->destructor)
+      lista->destructor(nodo_borrador->elemento);
     free (nodo_borrador);
   }
+  if (lista->destructor)
+    lista->destructor(lista->primero->elemento);
   free (lista->primero);
   free (lista);
 }

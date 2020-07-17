@@ -7,11 +7,13 @@
 typedef struct lista lista_t;
 typedef struct lista_iterador lista_iterador_t;
 
+typedef void (*lista_liberar_elemento)(void*);
+
 /*
  * Crea la lista reservando la memoria necesaria.
  * Devuelve un puntero a la lista creada o NULL en caso de error.
  */
-lista_t* lista_crear();
+lista_t* lista_crear(lista_liberar_elemento destructor);
 
 /*
  * Inserta un elemento al final de la lista.
