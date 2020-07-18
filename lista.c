@@ -235,6 +235,8 @@ int lista_desencolar(lista_t* lista){
     return ERROR;
 
   if (lista->cantidad_elementos == UN_ELEMENTO){
+    if (lista->destructor)
+      lista->destructor(lista->primero->elemento);
     free (lista->primero);
     lista->primero = NULL;
     lista->tope = NULL;
