@@ -459,6 +459,7 @@ void pokedex_informacion(pokedex_t* pokedex, int numero_pokemon, char nombre_pok
 	especie_pokemon_t* especie_encontrada = arbol_buscar(pokedex->pokemones, (void*)especie_a_buscar);
 	if (especie_encontrada){
 		if (nombre_pokemon[0] == '\0'){
+			printf("Especie: %s  Numero de especie: %i  Descripción: %s\n\n", especie_encontrada->nombre, especie_encontrada->numero, especie_encontrada->descripcion);
 			lista_con_cada_elemento(especie_encontrada->pokemones, mostrar_pokemon, NULL);
 			free(especie_a_buscar);
 			return;
