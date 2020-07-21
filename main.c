@@ -34,7 +34,7 @@ bool comando_iniciar_pokedex(char letra, pokedex_t** pokedex, bool describir){
   (*pokedex) = pokedex_prender();
   if (!(*pokedex)){
     printf("Ocurrió un error al encender la pokedex, revisá el archivo pokedex.txt\n");
-    return NO_EJECUTADO;
+    return EJECUTADO;
   }
   printf("- Se encendió la pokedex -\n\n");
   return EJECUTADO;
@@ -51,7 +51,7 @@ bool comando_guardar_pokedex(char letra, pokedex_t** pokedex, bool describir){
   int chequeo_apagar = pokedex_apagar(*pokedex);
   if (chequeo_apagar == ERROR){
     printf("Ocurrió un error al guardar la información, por favor revisá los archivos cargados\n");
-    return NO_EJECUTADO;
+    return EJECUTADO;
   }else {
     printf("- Se guardó la información correctamente -\n\n");
     return EJECUTADO;
@@ -63,12 +63,7 @@ bool comando_salir_programa(char letra, pokedex_t** pokedex, bool describir){
     printf("S : Apaga la pokedex (no guarda datos)\n");
     return NO_EJECUTADO;
   }
-  else if (letra != SALIR_PROGRAMA)
-    return NO_EJECUTADO;
-
-  pokedex_destruir(*pokedex);
-
-  return EJECUTADO;
+  return NO_EJECUTADO;
 }
 
 bool comando_ayuda(char letra, pokedex_t** pokedex, bool describir){
@@ -101,8 +96,8 @@ bool comando_avistar_pokemon(char letra, pokedex_t** pokedex, bool describir){
 
   int chequeo_avistar = pokedex_avistar(*pokedex, ruta_archivo);
   if (chequeo_avistar == ERROR){
-    printf("Ocurrió un error al avistar, por favor revisá la ruta/nombre del archivo ingresado\n");
-    return NO_EJECUTADO;
+    printf("Ocurrió un error al avistar, por favor revisá la ruta/nombre del archivo ingresado\n\n");
+    return EJECUTADO;
   }else {
     printf("\n- Se agregaron a la pokedex los pokemones avistados correctamente -\n\n");
     return EJECUTADO;
@@ -123,8 +118,8 @@ bool comando_evolucion_pokemon(char letra, pokedex_t** pokedex, bool describir){
 
   int chequeo_avistar = pokedex_avistar(*pokedex, ruta_archivo);
   if (chequeo_avistar == ERROR){
-    printf("Ocurrió un error al evolucionar, por favor revisá la ruta/nombre del archivo ingresado\n");
-    return NO_EJECUTADO;
+    printf("Ocurrió un error al evolucionar, por favor revisá la ruta/nombre del archivo ingresado\n\n");
+    return EJECUTADO;
   }else {
     printf("\n- Se evolucionaron los pokemones capturados en la pokedex -\n\n");
     return EJECUTADO;
@@ -138,6 +133,10 @@ bool comando_capturas_recientes(char letra, pokedex_t** pokedex, bool describir)
   }
   else if (!(*pokedex) || letra != CAPTURAS_RECIENTES)
     return NO_EJECUTADO;
+  else if (lista_vacia((*pokedex)->ultimos_capturados)){
+    printf("No se capturaron pokemones recientemente\n\n");
+    return EJECUTADO;
+  }
 
   pokedex_ultimos_capturados(*pokedex);
   printf("\n");
@@ -152,7 +151,10 @@ bool comando_vistas_recientes(char letra, pokedex_t** pokedex, bool describir){
   }
   else if (!(*pokedex) || letra != VISTAS_RECIENTES)
     return NO_EJECUTADO;
-
+  else if (lista_vacia((*pokedex)->ultimos_vistos)){
+    printf("No se avistaron pokemones recientemente\n\n");
+    return EJECUTADO;
+  }
   pokedex_ultimos_vistos(*pokedex);
   printf("\n");
 
@@ -166,6 +168,10 @@ bool comando_info_especie(char letra, pokedex_t** pokedex, bool describir){
   }
   else if (letra != INFO_ESPECIE)
     return NO_EJECUTADO;
+  else if (arbol_vacio((*pokedex)->pokemones)){
+    printf("La pokedex no tiene especies ni pokemones cargados\n\n");
+    return EJECUTADO;
+  }
 
   int numero_especie = 0;
   printf("Por favor ingresá el número de la especie por la cual deseas consultar:\n");
@@ -184,6 +190,10 @@ bool comando_info_pokemon(char letra, pokedex_t** pokedex, bool describir){
   }
   if (letra != INFO_POKEMON)
     return NO_EJECUTADO;
+  else if (arbol_vacio((*pokedex)->pokemones)){
+    printf("La pokedex no tiene especies ni pokemones cargados\n\n");
+    return EJECUTADO;
+  }
 
   int numero_especie = 0;
   char nombre_pokemon[MAX_NOMBRE];
@@ -244,6 +254,7 @@ int main(){
         mostrar_ayuda(POKEDEX_ENCENDIDA);
     }else if (letra == SALIR_PROGRAMA){
       printf("Gracias por utilizar la pokedex, hasta la próxima.\n");
+      pokedex_destruir(pokedex);
       se_termino = true;
     }else if (letra == INICIAR_POKEDEX){
       comando_iniciar_pokedex(letra, &pokedex, false);
