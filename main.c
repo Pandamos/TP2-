@@ -91,12 +91,12 @@ bool comando_avistar_pokemon(char letra, pokedex_t** pokedex, bool describir){
     return NO_EJECUTADO;
 
   char ruta_archivo[MAX_RUTA];
-  printf("Por favor ingrese el nombre del archivo si se encuentra en la misma carpeta que el programa, o la ruta del mismo en caso contrario.\n");
+  printf("Por favor ingrese el nombre del archivo si se encuentra en la misma carpeta que el programa, o la ruta del mismo en caso contrario:\n");
   scanf(" %s", ruta_archivo);
 
   int chequeo_avistar = pokedex_avistar(*pokedex, ruta_archivo);
   if (chequeo_avistar == ERROR){
-    printf("Ocurrió un error al avistar, por favor revisá la ruta/nombre del archivo ingresado\n\n");
+    printf("\nOcurrió un error al avistar, por favor revisá la ruta/nombre del archivo ingresado\n\n");
     return EJECUTADO;
   }else {
     printf("\n- Se agregaron a la pokedex los pokemones avistados correctamente -\n\n");
@@ -113,12 +113,12 @@ bool comando_evolucion_pokemon(char letra, pokedex_t** pokedex, bool describir){
     return NO_EJECUTADO;
 
   char ruta_archivo[MAX_RUTA];
-  printf("Por favor ingrese el nombre del archivo si se encuentra en la misma carpeta que el programa, o la ruta del mismo en caso contrario.\n");
+  printf("Por favor ingrese el nombre del archivo si se encuentra en la misma carpeta que el programa, o la ruta del mismo en caso contrario:\n");
   scanf(" %s", ruta_archivo);
 
-  int chequeo_avistar = pokedex_avistar(*pokedex, ruta_archivo);
+  int chequeo_avistar = pokedex_evolucionar(*pokedex, ruta_archivo);
   if (chequeo_avistar == ERROR){
-    printf("Ocurrió un error al evolucionar, por favor revisá la ruta/nombre del archivo ingresado\n\n");
+    printf("\nOcurrió un error al evolucionar, por favor revisá la ruta/nombre del archivo ingresado\n\n");
     return EJECUTADO;
   }else {
     printf("\n- Se evolucionaron los pokemones capturados en la pokedex -\n\n");
@@ -169,7 +169,7 @@ bool comando_info_especie(char letra, pokedex_t** pokedex, bool describir){
   else if (letra != INFO_ESPECIE)
     return NO_EJECUTADO;
   else if (arbol_vacio((*pokedex)->pokemones)){
-    printf("La pokedex no tiene especies ni pokemones cargados\n\n");
+    printf("\nLa pokedex no tiene especies ni pokemones cargados\n\n");
     return EJECUTADO;
   }
 
@@ -177,6 +177,7 @@ bool comando_info_especie(char letra, pokedex_t** pokedex, bool describir){
   printf("Por favor ingresá el número de la especie por la cual deseas consultar:\n");
   scanf("%i", &numero_especie);
 
+  printf("\n");
   pokedex_informacion(*pokedex, numero_especie, "");
   printf("\n");
 
@@ -191,7 +192,7 @@ bool comando_info_pokemon(char letra, pokedex_t** pokedex, bool describir){
   if (letra != INFO_POKEMON)
     return NO_EJECUTADO;
   else if (arbol_vacio((*pokedex)->pokemones)){
-    printf("La pokedex no tiene especies ni pokemones cargados\n\n");
+    printf("\nLa pokedex no tiene especies ni pokemones cargados\n\n");
     return EJECUTADO;
   }
 
@@ -199,9 +200,10 @@ bool comando_info_pokemon(char letra, pokedex_t** pokedex, bool describir){
   char nombre_pokemon[MAX_NOMBRE];
   printf("Por favor ingresá el número de la especie por la cual deseas consultar:\n");
   scanf("%i", &numero_especie);
-  printf("Ahora ingresá el nombre del pokemon perteneciente a esa especie por el cual deseas consultar:\n");
+  printf("\nAhora ingresá el nombre del pokemon perteneciente a esa especie por el cual deseas consultar:\n");
   scanf(" %s", nombre_pokemon);
 
+  printf("\n");
   pokedex_informacion(*pokedex, numero_especie, nombre_pokemon);
   printf("\n");
 
@@ -228,7 +230,7 @@ void despachar_comando(char letra, pokedex_t** pokedex){
   for (int i = 0; !ejecutado && comandos[i]; i++)
     ejecutado = comandos[i](letra, pokedex, false);
   if (!ejecutado)
-    printf("Comando inválido\n");
+    printf("Comando inválido\n\n");
 }
 
 int main(){
@@ -262,7 +264,7 @@ int main(){
     }else if (!primer_vuelta){
       despachar_comando(letra, &pokedex);
     }else
-      printf("Comando no inválido\n\n");
+      printf("Comando inválido\n\n");
   }
 
   return 0;
