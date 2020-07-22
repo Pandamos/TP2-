@@ -26,18 +26,27 @@
 #define LEYO_UN_ELEMENTO 1
 #define LEIDOS_NECESARIOS_POKEMON 3
 
-//CONTROLAR QUE ARBOL BUSCAR DEVUELVA ARBOL->NODO_RAIZ->ELEMENTO SI EL ELEMENTO ES LA RAIZ
+/*
+*	Recibe un puntero a un pokemon y libera la memoria utilizada por el mismo.
+*/
 void liberar_pokemon(void* pokemon){
 	particular_pokemon_t* pokemon_a_borrar = (particular_pokemon_t*)pokemon;
 	free(pokemon_a_borrar);
 }
 
+/*
+*	Recibe un puntero a una especie de pokemon y libera la memoria utilizada por el mismo.
+*/
 void destruir_pokemones(void* especie_recibida){
 	especie_pokemon_t* especie = (especie_pokemon_t*)especie_recibida;
 	lista_destruir(especie->pokemones);
 	free(especie);
 }
 
+/*
+*	Recibe dos especies y devuele 1 si la especie uno es mayor que la dos, 0 si son iguales, -1 si es menor. No puede recibir
+*	elementos NULL ya que no existe la posibilidad de agregar elementos nulos al abb.
+*/
 int comparar_especies(void* especie_uno, void* especie_dos){
 	especie_pokemon_t* primera = (especie_pokemon_t*)especie_uno;
 	especie_pokemon_t* segunda = (especie_pokemon_t*)especie_dos;
@@ -84,6 +93,10 @@ pokedex_t* pokedex_crear(char entrenador[MAX_NOMBRE]){
 	return pokedex;
 }
 
+/*
+*	Recibe una pokedex creada y un pokemon para ser agregado al historial de vistos y al de capturados si fue capturado.
+* Devuelve 0 si no hubo errores, -1 en caso contrario.
+*/
 int actualizar_historial(pokedex_t* pokedex, particular_pokemon_t* pokemon){
 	particular_pokemon_t* pokemon_vistos = (particular_pokemon_t*)malloc(sizeof(particular_pokemon_t));
 	if (!pokemon_vistos)
@@ -121,6 +134,10 @@ int actualizar_historial(pokedex_t* pokedex, particular_pokemon_t* pokemon){
 	return EXITO;
 }
 
+/*
+*	Recibe una pokedex, una especie y un pokemon creados con información. Agrega el pokemon al arbol y crea la especie en caso
+* de ser necesario. Devuelve 0 si no hubo errores, -1 en caso contrario.
+*/
 int actualizar_pokedex(pokedex_t* pokedex, especie_pokemon_t* especie, particular_pokemon_t* pokemon){
 	particular_pokemon_t* pokemon_a_insertar = (particular_pokemon_t*)malloc(sizeof(particular_pokemon_t));
 	if (!pokemon)
@@ -233,6 +250,11 @@ int pokedex_avistar(pokedex_t* pokedex, char ruta_archivo[MAX_RUTA]){
 		return EXITO;
 }
 
+/*
+*	Recibe la especie en donde se encuentra el pokemon solicitado para evolucionar, su nombre, un puntero para almacenar su posición en lista
+* si es que se existe el mismo, un booleano para informar error, un booleano que informa si puede evolucionar el pokemon y uno para informar si se
+* encontró. Devuelve un puntero al pokemon buscado o NULL si falló.
+*/
 particular_pokemon_t* buscar_pokemon(especie_pokemon_t* especie_anterior, size_t* posicion_pokemon, char nombre_pokemon[MAX_NOMBRE], bool* hubo_error, bool* se_encontro, bool* no_fue_capturado){
 	lista_iterador_t* iterador = NULL;
 	particular_pokemon_t* pokemon_en_lista = NULL;
@@ -261,6 +283,11 @@ particular_pokemon_t* buscar_pokemon(especie_pokemon_t* especie_anterior, size_t
 	return pokemon_en_lista;
 }
 
+/*
+*	Recibe la especie a insertar cargada en caso de no existir en el arbol, la especie sin evolucionar en donde se va a buscar al pokemon a evolucionar, el nombre del pokemon,
+* la pokedex inicializada y la especie leida del archivo que va a ser buscacada en el arbol. Si existe un error se informa através del booleano hubo_error y
+* se aborta la función.
+*/
 void evolucionar_pokemon(pokedex_t* pokedex, especie_pokemon_t* especie_a_insertar, bool* hubo_error, especie_pokemon_t especie_sin_evolucionar, char nombre_pokemon[MAX_NOMBRE], especie_pokemon_t* especie_leida, bool* no_fue_capturado){
 	int chequeo_borrar = 0;
 	int chequeo_insertar = 0;
@@ -321,6 +348,10 @@ void evolucionar_pokemon(pokedex_t* pokedex, especie_pokemon_t* especie_a_insert
 	}
 }
 
+/*
+*	Recibe la pokedex inicializada, la especie leida del archivo, la especie en donde se encuentra el pokemon, el nombre del pokemon y un booleano para informar error.
+* Devuelve true si el pokemon fue evolucionado correctamente o false en caso contrario.
+*/
 bool pokemon_evolucionado_correctamente(especie_pokemon_t* especie_leida, especie_pokemon_t especie_sin_evolucionar, char nombre_pokemon[MAX_NOMBRE], pokedex_t* pokedex, bool* hubo_error){
 	bool no_fue_capturado = false;
 
@@ -441,6 +472,9 @@ void pokedex_destruir(pokedex_t* pokedex){
 	free(pokedex);
 }
 
+/*
+*	Recibe un pokemon y muestra su información por pantalla.
+*/
 void mostrar_pokemon(void* pokemon_recibido, void* cosa){
 	cosa = cosa;
 	if (!pokemon_recibido)
@@ -453,8 +487,6 @@ void mostrar_pokemon(void* pokemon_recibido, void* cosa){
 	printf("Pokemon: %s  Nivel: %i  Capturado: %c\n", pokemon->nombre, pokemon->nivel, pokemon->capturado? fue_capturado : no_fue_capturado);
 }
 
-//CHEQUEAR QUE NO TENGO QUE PREGUNTAR SI EXISTE pokedex->pokemones PORQUE SINO NO SE HUBIERA CREADO POKEDEX
-
 void pokedex_informacion(pokedex_t* pokedex, int numero_pokemon, char nombre_pokemon[MAX_NOMBRE]){
 	if (!pokedex)
 		return;
@@ -464,7 +496,6 @@ void pokedex_informacion(pokedex_t* pokedex, int numero_pokemon, char nombre_pok
 	}
 
 	especie_pokemon_t* especie_a_buscar = (especie_pokemon_t*)malloc(sizeof(especie_pokemon_t));
-
 	especie_a_buscar->numero = numero_pokemon;
 
 	lista_iterador_t* iterador_lista = NULL;
@@ -501,7 +532,6 @@ void pokedex_informacion(pokedex_t* pokedex, int numero_pokemon, char nombre_pok
 				pokemon_encontrado = true;
 			}
 		}
-
 		lista_iterador_destruir(iterador_lista);
 
 		if (!pokemon_encontrado){
@@ -513,6 +543,10 @@ void pokedex_informacion(pokedex_t* pokedex, int numero_pokemon, char nombre_pok
 	free(especie_a_buscar);
 }
 
+/*
+*	Recibe una especie con información, el archivo para escribir abierto y un puntero a booleano para informar error.
+* Copia la especie con su contenido (incluyendo pokemones) al archivo, si hubo un error es informado por el booleano.
+*/
 void copiar_informacion(void* especie_recibida, void* archivo, void* booleano){
 	bool* hubo_error = (bool*)booleano;
 	if (!especie_recibida || !archivo){
@@ -565,6 +599,10 @@ int pokedex_apagar(pokedex_t* pokedex){
 		return EXITO;
 }
 
+/*
+*	Recibe la pokedex inicializada, el archivo con la información a cargar abierto, un booleano para informar error y un puntero
+* para devolver la especie en donde se van a agregar los pokemones leidos del archivo una vez agregada la misma al arbol.
+*/
 void agregar_especie(pokedex_t* pokedex, FILE* pokedex_info, bool* hubo_error, especie_pokemon_t** especie_a_utilizar){
 	especie_pokemon_t* especie_nueva = (especie_pokemon_t*)malloc(sizeof(especie_pokemon_t));
 	if (!especie_nueva){
@@ -597,6 +635,10 @@ void agregar_especie(pokedex_t* pokedex, FILE* pokedex_info, bool* hubo_error, e
 	}
 }
 
+/*
+*	Recibe la pokedex inicializada, el archivo con la información a cargar abierto, un booleano para informar error y la especie
+* a donde se va a agregar el pokemon leido del archivo.
+*/
 void agregar_pokemon(pokedex_t* pokedex, FILE* pokedex_info, bool* hubo_error, especie_pokemon_t* especie_a_utilizar){
 	particular_pokemon_t* pokemon = (particular_pokemon_t*)malloc(sizeof(particular_pokemon_t));
 	if (!pokemon){

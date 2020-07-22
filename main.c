@@ -21,8 +21,14 @@
 #define EJECUTADO true
 #define NO_EJECUTADO false
 
+/*
+* Recibe un booleano para conocer el estado de la pokedex y muestra los comandos disponibles hasta el momento.
+*/
 void mostrar_ayuda(bool pokedex_iniciada);
 
+/*
+* Recibe un puntero a una pokedex nula y la crea. Si describir es verdadero solo muestra la información del comando.
+*/
 bool comando_iniciar_pokedex(char letra, pokedex_t** pokedex, bool describir){
   if (describir){
     printf("I : Inicia la pokedex\n");
@@ -40,6 +46,9 @@ bool comando_iniciar_pokedex(char letra, pokedex_t** pokedex, bool describir){
   return EJECUTADO;
 }
 
+/*
+* Recibe 
+*/
 bool comando_guardar_pokedex(char letra, pokedex_t** pokedex, bool describir){
   if (describir){
     printf("G : Guarda la información de la pokedex\n");
